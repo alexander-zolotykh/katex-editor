@@ -4,7 +4,7 @@
     "description": "",
     "author": "alexander-zolotykh",
     "license": "MIT",
-    "repository": "alexander-zolotykh/katex-editor",
+    "repository": "git@github.com:alexander-zolotykh/katex-editor.git",
     "main": "dist/index.js",
     "module": "dist/index.es.js",
     "jsnext:main": "dist/index.es.js",
