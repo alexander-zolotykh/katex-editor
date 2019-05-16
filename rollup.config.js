@@ -1,12 +1,11 @@
 import typescript from 'rollup-plugin-typescript2'
 import commonjs from 'rollup-plugin-commonjs'
 import external from 'rollup-plugin-peer-deps-external'
-// import postcss from 'rollup-plugin-postcss-modules'
 import postcss from 'rollup-plugin-postcss'
 import resolve from 'rollup-plugin-node-resolve'
 import url from 'rollup-plugin-url'
+import cjs from "rollup-plugin-cjs-es";
 import svgr from '@svgr/rollup'
-
 import pkg from './package.json'
 
 export default {
@@ -28,7 +27,7 @@ export default {
   plugins: [
     external(),
     postcss({
-      modules: true
+      modules: false
     }),
     url(),
     svgr(),
@@ -37,6 +36,13 @@ export default {
       rollupCommonJSResolveHack: true,
       clean: true
     }),
-    commonjs()
-  ]
+    commonjs({
+      include: /node_modules/,
+      extensions: [ '.js', '.ts' ],
+    }),
+    cjs({
+      nested: true
+    })
+  ],
+  external: ['react', 'react-dom', 'prop-types', 'react-katex'],
 }

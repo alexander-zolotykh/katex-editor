@@ -1,0 +1,5 @@
+{
+    "src/**/*.(ts|tsx)": [
+        "tslint --project tsconfig.json --fix",
+    ]
+}
