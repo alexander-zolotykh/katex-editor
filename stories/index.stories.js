@@ -1,11 +1,19 @@
 import React from "react";
 
 import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { linkTo } from "@storybook/addon-links";
+import { observable } from "mobx";
+import { observer } from "mobx-react";
 
-import { Button, Welcome } from "@storybook/react/demo";
+import { KatexEditor } from "../dist";
 
-import { Main } from "../dist";
+let formula = observable.box("a+b/12*A");
 
-storiesOf("Katex Editor", module).add("main", () => <Main />);
+const onChangeFormula = (nextFormula) => {
+  formula.set(nextFormula);
+}
+
+const KatexEditorReactiveComponent = observer(() => <KatexEditor formula={formula.get()} onChange={onChangeFormula} />);
+
+storiesOf("Katex Editor", module).add("main", () => {
+  return <KatexEditorReactiveComponent/>;
+});
