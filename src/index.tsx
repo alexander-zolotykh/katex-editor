@@ -1,12 +1,8 @@
 import { autobind } from "core-decorators";
 import * as React from "react";
 import { Formula } from "./components/formula";
+import { IKatexEditorProps } from "./IKatexEditorProps";
 import "katex/dist/katex.min.css";
-
-interface IKatexEditorProps {
-  formula: string;
-  onChange(formula: string): void;
-}
 
 @autobind
 export class KatexEditor extends React.Component<IKatexEditorProps> {
