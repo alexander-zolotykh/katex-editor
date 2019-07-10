@@ -13,6 +13,7 @@ import EventListener from 'react-event-listener';
 @autobind
 export class TeX extends Component<ITeXProps> {
   private readonly rootRef = React.createRef<HTMLDivElement>();
+  private readonly popupRef = React.createRef<HTMLDivElement>();
   private readonly textAreaRef = React.createRef<HTMLTextAreaElement>();
 
   @observable formula = "a+b";
@@ -50,11 +51,11 @@ export class TeX extends Component<ITeXProps> {
 
       const okButtonTitle = invalidTeX ? "Invalid KaTeX syntax, please correct your formula first" : "Apply formula";
 
-      const textAreaClassNames = classNames(theme.texValue, theme["texValue--textarea"]);
+      const textAreaClassNames = classNames(theme.texValue, theme["texValue--textarea"], "katex-scroll");
       const textAreaEmulatorClassNames = classNames(theme.texValue, theme["texValue--emulator"]);
 
       editPanel = (
-        <div className={theme.panel}>
+        <div className={theme.panel} ref={this.popupRef}>
           <div className={theme.relative}>
             <div className={textAreaEmulatorClassNames}>{this.formula}</div>
             <textarea
@@ -66,7 +67,7 @@ export class TeX extends Component<ITeXProps> {
               value={this.formula}
             />
 
-            <div className={theme.panelOutput}>{output}</div>
+            <div className={`${theme.panelOutput} katex-scroll`}>{output}</div>
           </div>
           <div className={theme.footer}>
             <a
@@ -105,7 +106,7 @@ export class TeX extends Component<ITeXProps> {
 
     return (
       <div ref={this.rootRef} className={className}>
-        <div className={"katex-static-output"} onClick={this.onClick}>
+        <div className={`katex-static-output katex-scroll`} onClick={this.onClick}>
           <InlineMath>{this.formula}</InlineMath>
         </div>
         {editPanel}
@@ -130,14 +131,16 @@ export class TeX extends Component<ITeXProps> {
 
   onClickOutside(event: MouseEvent): void {
     const target = event.target as HTMLDivElement;
-    const isClickAboveRootElement = target.contains(this.rootRef.current!);
-    if (isClickAboveRootElement && this.isEditing) {
-      this.doCancel();
+    if (!this.popupRef.current) {
+      return;
     }
+    if (this.popupRef.current.contains(target) || this.rootRef.current!.contains(target)) {
+      return;
+    }
+    this.doCancel();
   }
 
-  onClick(event: React.MouseEvent<HTMLDivElement>): void {
-    event.stopPropagation();
+  onClick(): void {
     this.show();
   }
 
