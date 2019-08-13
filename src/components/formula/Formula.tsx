@@ -14,6 +14,7 @@ export class Formula extends React.Component<IFormulaProps> {
           formula={this.props.formula}
           doneText={"Ok"}
           cancelText={"Cancel"}
+          readonly={this.props.readonly}
           onApply={this.onApply}
         />
       </div>

@@ -34,14 +34,14 @@ export class TeX extends Component<ITeXProps> {
   }
 
   render(): React.ReactNode {
-    const { doneText, cancelText } = this.props;
+    const { doneText, cancelText, readonly } = this.props;
 
     const className = this.isEditing ? classNames(theme.tex, theme.activeTeX) : theme.tex;
     const invalidTeX = false;
 
     let editPanel = null;
 
-    if (this.isEditing) {
+    if (this.isEditing && !readonly) {
       const output = invalidTeX ? (
         <div className={theme.errorMessage}>Formula input error</div>
       ) : (
@@ -119,7 +119,7 @@ export class TeX extends Component<ITeXProps> {
   }
 
   onKeyDown(event: KeyboardEvent): void {
-    if (this.isEditing) {
+    if (this.isEditing && !this.props.readonly) {
       if (event.key.toLowerCase() === "escape") {
         this.doCancel();
       } else if (event.key.toLowerCase() === "enter" && (event.metaKey || event.ctrlKey)) {
@@ -131,7 +131,7 @@ export class TeX extends Component<ITeXProps> {
   onClickOutside(event: MouseEvent): void {
     const target = event.target as HTMLDivElement;
     const isClickAboveRootElement = target.contains(this.rootRef.current!);
-    if (isClickAboveRootElement && this.isEditing) {
+    if (isClickAboveRootElement && this.isEditing && !this.props.readonly) {
       this.doCancel();
     }
   }
@@ -142,13 +142,13 @@ export class TeX extends Component<ITeXProps> {
   }
 
   @action show(): void {
-    if (!this.isEditing) {
+    if (!this.isEditing && !this.props.readonly) {
       this.isEditing = true;
     }
   }
 
   @action hide(): void {
-    if (this.isEditing) {
+    if (this.isEditing && !this.props.readonly) {
       this.isEditing = false;
     }
   }
