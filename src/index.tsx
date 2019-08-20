@@ -10,7 +10,7 @@ export class KatexEditor extends React.Component<IKatexEditorProps> {
   render(): React.ReactNode {
     return (
       <div>
-        <Formula formula={this.props.formula} onChange={this.props.onChange} />
+        <Formula formula={this.props.formula} readonly={this.props.readonly} onChange={this.props.onChange} />
       </div>
     );
   }

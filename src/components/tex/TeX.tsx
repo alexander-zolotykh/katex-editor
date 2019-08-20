@@ -7,14 +7,14 @@ import { Component } from "react";
 import { InlineMath } from "react-katex";
 import { ITeXProps } from "./ITeXProps";
 import theme from "./styles.module.css";
-import EventListener from 'react-event-listener';
+import EventListener from "react-event-listener";
 
 @observer
 @autobind
 export class TeX extends Component<ITeXProps> {
   private readonly rootRef = React.createRef<HTMLDivElement>();
-  private readonly popupRef = React.createRef<HTMLDivElement>();
   private readonly textAreaRef = React.createRef<HTMLTextAreaElement>();
+  private readonly popupRef = React.createRef<HTMLDivElement>();
 
   @observable formula = "a+b";
   @observable isTextAreaFocused = false;
@@ -35,14 +35,14 @@ export class TeX extends Component<ITeXProps> {
   }
 
   render(): React.ReactNode {
-    const { doneText, cancelText } = this.props;
+    const { doneText, cancelText, readonly } = this.props;
 
     const className = this.isEditing ? classNames(theme.tex, theme.activeTeX) : theme.tex;
     const invalidTeX = false;
 
     let editPanel = null;
 
-    if (this.isEditing) {
+    if (this.isEditing && !readonly) {
       const output = invalidTeX ? (
         <div className={theme.errorMessage}>Formula input error</div>
       ) : (
@@ -72,7 +72,7 @@ export class TeX extends Component<ITeXProps> {
           <div className={theme.footer}>
             <a
               href="https://mathlive.io/deploy/reference.html"
-              onClick={this.onClickExternalLink}
+              onClick={TeX.onClickExternalLink}
               className={theme.link}
               title="Open syntax documentation in new window"
             >
@@ -120,7 +120,7 @@ export class TeX extends Component<ITeXProps> {
   }
 
   onKeyDown(event: KeyboardEvent): void {
-    if (this.isEditing) {
+    if (this.isEditing && !this.props.readonly) {
       if (event.key.toLowerCase() === "escape") {
         this.doCancel();
       } else if (event.key.toLowerCase() === "enter" && (event.metaKey || event.ctrlKey)) {
@@ -145,13 +145,13 @@ export class TeX extends Component<ITeXProps> {
   }
 
   @action show(): void {
-    if (!this.isEditing) {
+    if (!this.isEditing && !this.props.readonly) {
       this.isEditing = true;
     }
   }
 
   @action hide(): void {
-    if (this.isEditing) {
+    if (this.isEditing && !this.props.readonly) {
       this.isEditing = false;
     }
   }
@@ -261,7 +261,7 @@ export class TeX extends Component<ITeXProps> {
   //     }
   // };
 
-  onClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>): void {
+  static onClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>): void {
     window.open((event.target as HTMLAnchorElement).href);
     event.preventDefault();
   }
